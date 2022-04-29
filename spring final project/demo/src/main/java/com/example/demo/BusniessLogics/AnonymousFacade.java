@@ -37,6 +37,23 @@ public class AnonymousFacade extends FacadeBase{
         }
         return userRole;
     }
+
+    //get user id by username
+    public long getUserId(String username){
+        UsersDAO usersDAO=new UsersDAO();
+        user= usersDAO.getUserByUsername(username);
+        return user.id;
+    }
+
+    //get user role by username
+    public String getUserRole(String username){
+        UsersDAO usersDAO=new UsersDAO();
+        var res=usersDAO.joinUserWithUserRole(username);
+        return res;
+    }
+
+
+
     // add new customer == register / sign up
     public boolean addCustomer(Customer customer,User user){
         if(user.userRole==1) {

@@ -1,17 +1,25 @@
 package com.example.demo.Controllers;
 
 import com.example.demo.BusniessLogics.AnonymousFacade;
-import com.example.demo.BusniessLogics.LoginToken;
+import com.example.demo.jwt.JWTUtil;
 import com.example.demo.pocoPackage.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AnonymousController {
 
     private AnonymousFacade anonymousFacade=new AnonymousFacade();
+
+    @Autowired private JWTUtil jwtUtil;
+    @Autowired private AuthenticationManager authManager;
 
     @GetMapping("/flights")
     public List getAllFlights() {
@@ -57,10 +65,24 @@ public class AnonymousController {
         return res != null ? res : new Country();
     }
 
-//    @PostMapping("login-token/")
-//    public LoginToken login() {
-//        //do we have to do login function???
-//    }
+
+    @PostMapping("/authenticate")
+    public Map<String, Object> loginHandler(@RequestBody LoginCredentials body){
+        try {
+            UsernamePasswordAuthenticationToken authInputToken =
+                    new UsernamePasswordAuthenticationToken(body.getUsername(), body.getPassword());
+
+            authManager.authenticate(authInputToken);
+
+            String token = jwtUtil.generateToken(body.getUsername(),anonymousFacade.getUserId(body.getUsername()),anonymousFacade.getUserRole(body.getUsername()));
+
+            return Collections.singletonMap("jwt-token", token);
+        }catch (AuthenticationException authExc){
+            throw new RuntimeException("Invalid Login Credentials");
+        }
+    }
+
+
 
     @PostMapping("/addCustomer")
     public boolean addCustomer(@RequestBody Customer customer, @RequestBody User user) {

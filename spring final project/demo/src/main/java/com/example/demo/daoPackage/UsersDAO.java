@@ -117,7 +117,7 @@ public class UsersDAO implements DAO{
         ResultSet result=null;
         String role=null;
         try {
-            result= stm.executeQuery("select User_Roles.role_name from Users join User_Roles on Users.user_role=User_Roles.id where Users.username="+username);
+            result= stm.executeQuery("select User_Roles.role_name from Users join User_Roles on Users.user_role=User_Roles.id where Users.username= \'"+username+"\'");
             result.next();
             role=result.getString("role_name");
         } catch (SQLException e) {

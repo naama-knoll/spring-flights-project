@@ -23,9 +23,9 @@ public class AdministratorFacade extends AnonymousFacade{
         this.token = token;
     }
 
-    public AdministratorFacade(){
-        this.token=new LoginToken(2,"yehuda",UserRole.ADMIN);
-    }
+//    public AdministratorFacade(){
+//        this.token=new LoginToken(2,"yehuda",UserRole.ADMIN);
+//    }
 
     //get all the customers in the system
     public List getAllCustomers(){
